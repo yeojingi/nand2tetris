@@ -1,0 +1,131 @@
+class Poo {
+  field int memAddress;
+  field int x;
+  field int h;
+  field boolean isFallen;
+
+  field int gravity;
+
+  constructor Poo new(int initX) {
+    let x = initX;
+    let h = 1;
+    let gravity = 55;
+    let isFallen = false;
+    return this;
+  }
+
+  method boolean move(int playerX) {
+    var int y;
+    var int prevX, prevH;
+
+    let prevX = x;
+    let prevH = h;
+
+    // the height of the poo from the ground changes linearly. so that it seems being acclerated by gravity.
+    if ( h * gravity / 100 < 1) { let h = h + 1;}
+    if ( h < 140 ) {
+      let h = h + ( h * gravity / 100 );
+    }
+    else {
+      let h = h + ( 190 * gravity / 100 );
+    }
+
+    let y = y + ( h * 32 );
+
+    do erase(prevX, prevH);
+    do draw();
+
+    // if the poo has fallen
+    if ( h > ( 256 - 16 )) {
+      do erase(prevX, 256-16);
+
+      // check if it is collied with the player
+      if (playerX = x) {
+        do Game.gameover();
+      }
+      do fallen();
+      let isFallen = true;
+    }
+    else {
+    }
+
+    return isFallen;
+  }
+
+  method void fallen() {
+    let h = 256 - 16;
+    do fallenDraw(x);
+    return;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+  
+  method void erase(int prevX, int prevH) {
+    var int i, location;
+    let location = prevX + (prevH * 32);
+    let i = 0;
+    let memAddress = 16384+location;
+
+    while (i < 16) {
+      do Memory.poke(memAddress+(32 * i), 0);
+      let i = i + 1;
+    }
+    return;
+  }
+
+  method void draw() {
+    var int location;
+    let location = x + (h * 32);
+
+    let memAddress = 16384+location;
+
+    if (memAddress < 16384) { return;}
+    if (memAddress + 480 > 24576) { return;}
+
+    do Memory.poke(memAddress+0, 384);
+    do Memory.poke(memAddress+32, 1536);
+    do Memory.poke(memAddress+64, 2560);
+    do Memory.poke(memAddress+96, 2432);
+    do Memory.poke(memAddress+128, 2144);
+    do Memory.poke(memAddress+160, 4112);
+    do Memory.poke(memAddress+192, 8208);
+    do Memory.poke(memAddress+224, 4248);
+    do Memory.poke(memAddress+256, 16136);
+    do Memory.poke(memAddress+288, 16396);
+    do Memory.poke(memAddress+320, 16386);
+    do Memory.poke(memAddress+352, 8209);
+    do Memory.poke(memAddress+384, 32737);
+    do Memory.poke(memAddress+416, -32767);
+    do Memory.poke(memAddress+448, -32767);
+    do Memory.poke(memAddress+480, 32766);
+    return;
+  }
+
+  method void fallenDraw(int x) {
+    var int location;
+    let location = x + ((256 - 16) * 32);
+
+    let memAddress = 16384+location;
+
+    do Memory.poke(memAddress+0, 0);
+    do Memory.poke(memAddress+32, 0);
+    do Memory.poke(memAddress+64, 0);
+    do Memory.poke(memAddress+96, 0);
+    do Memory.poke(memAddress+128, 0);
+    do Memory.poke(memAddress+160, 0);
+    do Memory.poke(memAddress+192, 0);
+    do Memory.poke(memAddress+224, 0);
+    do Memory.poke(memAddress+256, 0);
+    do Memory.poke(memAddress+288, 0);
+    do Memory.poke(memAddress+320, 24);
+    do Memory.poke(memAddress+352, 4076);
+    do Memory.poke(memAddress+384, 30802);
+    do Memory.poke(memAddress+416, -20558);
+    do Memory.poke(memAddress+448, -10239);
+    do Memory.poke(memAddress+480, -2);
+    return;
+  }
+}

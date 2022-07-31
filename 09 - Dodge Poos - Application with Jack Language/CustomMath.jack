@@ -1,0 +1,9 @@
+// custom '%' operator
+// this is frequently used in this program
+class CustomMath {
+  function int rest(int a, int b) {
+    var int rest;
+    let rest = a - (b * (a / b));
+    return rest;
+  }
+}

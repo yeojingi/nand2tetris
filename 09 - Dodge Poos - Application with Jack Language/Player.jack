@@ -1,0 +1,71 @@
+class Player {
+  field int memAddress;
+  field int x, y;
+
+  constructor Player new () {
+    let memAddress = 0;
+    let x = 0;
+    let y = 15;
+    return this;
+  }
+
+  method void move(int key) {
+    var int prevX, prevY;
+    let prevX = x;
+    let prevY = y;
+    if (key = 130) { let x = x - 1;  }
+    if (key = 132) { let x = x + 1;  }
+    if ( x < 0 ) { let x = x + 32;}
+    let x = CustomMath.rest(x, 32);
+
+    do erase(prevX, prevY);
+    do draw();
+
+    return;
+  }
+  
+  method int getX() {
+    return x;
+  }
+
+  method void erase(int prevX, int prevY) {
+    var int i, location;
+    let location = prevX + (prevY * (32 * 16));
+    let i = 0;
+    let memAddress = 16384+location;
+
+    while (i < 16) {
+      do Memory.poke(memAddress+(32 * i), 0);
+      let i = i + 1;
+    }
+    return;
+  }
+
+  method void draw() {
+    var int location;
+    let location = x + (y * (32 * 16));
+
+    let memAddress = 16384+location;
+
+    if (memAddress < 16384) { return;}
+    if (memAddress + 480 > 24576) { return;}
+
+    do Memory.poke(memAddress+0, 4080);
+    do Memory.poke(memAddress+32, 4104);
+    do Memory.poke(memAddress+64, 8196);
+    do Memory.poke(memAddress+96, 16386);
+    do Memory.poke(memAddress+128, -32767);
+    do Memory.poke(memAddress+160, -25543);
+    do Memory.poke(memAddress+192, -23995);
+    do Memory.poke(memAddress+224, -32767);
+    do Memory.poke(memAddress+256, -32767);
+    do Memory.poke(memAddress+288, -32767);
+    do Memory.poke(memAddress+320, -32767);
+    do Memory.poke(memAddress+352, -30703);
+    do Memory.poke(memAddress+384, 18402);
+    do Memory.poke(memAddress+416, 8196);
+    do Memory.poke(memAddress+448, 4104);
+    do Memory.poke(memAddress+480, 4080);
+    return;
+  }
+}

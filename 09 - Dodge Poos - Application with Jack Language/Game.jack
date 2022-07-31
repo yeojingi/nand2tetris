@@ -1,0 +1,87 @@
+class Game {
+  static int time;
+  static boolean isGameover;
+  static int key;
+  static Array poos;
+
+  function void start() {
+    var Player player;
+    var Poo poo;
+
+    // seeds are used to generate random-like number
+    var int seed;
+    var int seed2;
+
+    var int i;
+
+    // isFallen is used to check if the poos are fallen to the ground
+    var boolean isFallen;
+
+    let player = Player.new();
+
+    // Let's make poos
+    let poos = Array.new(10);
+    let poos[0] = Poo.new(3);
+    let poos[1] = Poo.new(10);
+    let poos[2] = Poo.new(30);
+    let poos[3] = Poo.new(18);
+    let poos[4] = Poo.new(2);
+    let poos[5] = Poo.new(4);
+    let poos[6] = Poo.new(11);
+    let poos[7] = Poo.new(17);
+    let poos[8] = Poo.new(12);
+    let poos[9] = Poo.new(24);
+
+    let seed = 119;
+    let seed2 = 19;
+
+    let time = 0;
+    let isGameover = false;
+
+    do player.draw();
+
+    while (~(key = 140)) {
+      do Game.tiktok();
+      let key = Keyboard.keyPressed();
+
+      if (~(key = 0)) {
+        do player.move(key);
+      }
+
+      let i = 0;
+      while ( i < 10 ) {
+        let poo = poos[i];
+        let isFallen = poo.move(player.getX()); //player's x coordinate is needed to check if the player and the poo are collided
+        if (isFallen) {
+          let poos[i] = Poo.new(CustomMath.rest(CustomMath.rest(time + (seed2 * i * 2), seed), 32));
+        }
+        let i = i + 1;
+      }
+
+      do Sys.wait(100);
+
+    }
+
+    return; 
+  }
+
+  function void tiktok() {
+    let time = time + 1;
+
+    do Output.moveCursor(0, 0);
+    do Output.printString("Time: ");
+    do Output.printInt(time);
+
+    return;
+  }
+
+  function void gameover() {
+    let key = 140;
+
+    do Output.moveCursor(10,10);
+    do Output.printString("Game Over. Your Score is ");
+    do Output.printInt(time);
+    
+    return ;
+  }
+}
